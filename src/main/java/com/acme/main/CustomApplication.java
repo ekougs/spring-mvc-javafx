@@ -1,16 +1,11 @@
 package com.acme.main;
 
 import com.acme.components.PrimarySceneFactory;
-import com.acme.configuration.ApplicationContextProvider;
 import javafx.application.Application;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static com.acme.configuration.ApplicationContextProvider.getApplicationContext;
+import static com.acme.main.ServletServer.getApplicationContext;
 
 /**
  * User: sennen

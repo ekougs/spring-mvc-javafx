@@ -53,7 +53,8 @@ public class CustomViewResolver implements ViewResolver {
                 public void run() {
                     ObservableList<Node> contentPaneNodes = applicationContentPane.getChildren();
                     contentPaneNodes.clear();
-                    contentPaneNodes.addAll(((PaneProvider) beanFactory.getBean(viewName)).get());
+                    PaneProvider paneProvider = (PaneProvider) beanFactory.getBean(viewName);
+                    contentPaneNodes.add(paneProvider.get());
                 }
             });
         }
