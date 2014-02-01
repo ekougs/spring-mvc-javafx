@@ -3,8 +3,6 @@ package com.acme.main;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import java.net.InetAddress;
@@ -16,7 +14,6 @@ import java.net.InetSocketAddress;
  * Time: 13:11
  */
 public class ServletServer {
-    private static Logger LOG = LoggerFactory.getLogger(ServletServer.class);
     private static final int PORT = 8080;
     private static String SERVER_ADDRESS;
     private static Server SERVER;
