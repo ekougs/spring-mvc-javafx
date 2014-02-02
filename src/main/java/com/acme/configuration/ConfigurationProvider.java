@@ -1,14 +1,24 @@
 package com.acme.configuration;
 
-import com.acme.main.CustomApplication;
+import com.acme.components.PrimarySceneFactory;
+import com.acme.controller.HelloController;
+import com.acme.main.ServletServer;
+import com.acme.view.PaneProvider;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 
 /**
  * User: sennen
@@ -17,6 +27,11 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
  */
 @Configuration
 @EnableWebMvc
+@ComponentScan(basePackageClasses = {
+        PrimarySceneFactory.class,
+        PaneProvider.class,
+        HelloController.class
+})
 public class ConfigurationProvider extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -31,7 +46,20 @@ public class ConfigurationProvider extends WebMvcConfigurerAdapter {
     }
 
     @Bean
+    @Qualifier("content")
     public Pane contentPane() {
-        return CustomApplication.CONTENT_PANE;
+        return new VBox();
+    }
+
+    @Bean
+    @Qualifier("root")
+    public Pane rootPane() {
+        return new VBox();
+    }
+
+    @Bean
+    public WebTarget webTarget() {
+        Client client = ClientBuilder.newClient();
+        return client.target(ServletServer.getServerAddress());
     }
 }

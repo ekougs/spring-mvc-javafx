@@ -1,10 +1,10 @@
 package com.acme.main;
 
+import com.acme.configuration.ConfigurationProvider;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import java.net.InetAddress;
@@ -16,10 +16,10 @@ import java.net.InetSocketAddress;
  * Time: 13:11
  */
 public class ServletServer {
-    private static Logger LOG = LoggerFactory.getLogger(ServletServer.class);
     private static final int PORT = 8080;
     private static String SERVER_ADDRESS;
     private static Server SERVER;
+    private static AnnotationConfigWebApplicationContext applicationContext;
 
     public static void launch() throws Exception {
         InetAddress serverAddress = InetAddress.getLocalHost();
@@ -28,15 +28,19 @@ public class ServletServer {
         SERVER.setStopAtShutdown(true);
         WebAppContext webAppContext = new WebAppContext();
         webAppContext.setClassLoader(Thread.currentThread().getContextClassLoader());
-        DispatcherServlet dispatcherServlet = new DispatcherServlet();
-        ServletHolder mvcServletHolder = new ServletHolder("mvc-dispatcher", dispatcherServlet);
-        mvcServletHolder.setInitParameter("contextConfigLocation", "classpath:/applicationContext.xml");
+        applicationContext = new AnnotationConfigWebApplicationContext();
+        applicationContext.register(ConfigurationProvider.class);
+        ServletHolder mvcServletHolder = new ServletHolder("mvc-dispatcher", new DispatcherServlet(applicationContext));
         webAppContext.addServlet(mvcServletHolder, "/");
         webAppContext.setExtraClasspath(Thread.currentThread().getContextClassLoader().getResource("").getPath());
         webAppContext.setResourceBase("classpath:/");
 
         SERVER.setHandler(webAppContext);
         SERVER.start();
+    }
+
+    public static AnnotationConfigWebApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 
     public static void stop() throws Exception {

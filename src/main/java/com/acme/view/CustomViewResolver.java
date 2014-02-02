@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
@@ -25,7 +26,7 @@ public class CustomViewResolver implements ViewResolver {
     @Autowired
     private BeanFactory beanFactory;
 
-    @Autowired
+    @Autowired @Qualifier("content")
     private Pane applicationContentPane;
 
     @Override
@@ -52,7 +53,8 @@ public class CustomViewResolver implements ViewResolver {
                 public void run() {
                     ObservableList<Node> contentPaneNodes = applicationContentPane.getChildren();
                     contentPaneNodes.clear();
-                    contentPaneNodes.addAll(((PaneProvider) beanFactory.getBean(viewName)).get());
+                    PaneProvider paneProvider = beanFactory.getBean(viewName, PaneProvider.class);
+                    contentPaneNodes.add(paneProvider.get());
                 }
             });
         }
